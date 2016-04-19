@@ -74,6 +74,7 @@ class RaspberryForumsSpider(scrapy.Spider):
             head_list = self.browser.find_elements_by_xpath('//h2')
             for i in range(0,len(head_list)):
                 head_forum = head_list[i].text.encode("utf-8")
+                head_forum_link = head_list[i].find_element_by_xpath('.//a').get_attribute('href')
                 print head_forum
                 sub_forum_list = self.browser.find_elements_by_xpath('//ul[@class="topiclist forums"]')
                 forum_list = sub_forum_list[i].find_elements_by_xpath('.//li')
@@ -84,11 +85,12 @@ class RaspberryForumsSpider(scrapy.Spider):
                     forum_posts = forum_list[k].find_elements_by_xpath('.//dd')[1].text.encode("utf-8")
                     forum_lp_user = forum_list[k].find_elements_by_xpath('.//dd')[2].find_element_by_xpath('.//a').text
                     forum_lp_user_link = forum_list[k].find_elements_by_xpath('.//dd')[2].find_element_by_xpath('.//a').get_attribute("href")
-                    print forum_name, forum_link, forum_topics, forum_posts, forum_lp_user, forum_lp_user_link
+                    # print forum_name, forum_link, forum_topics, forum_posts, forum_lp_user, forum_lp_user_link
                     
                     key = head_forum+"_"+str(k)
                     item['key'] = key
                     item['head_forum'] = head_forum
+                    item['head_forum_link'] = head_forum_link
                     item['forum_name'] = forum_name
                     item['forum_link'] = forum_link
                     item['forum_topics'] = forum_topics
