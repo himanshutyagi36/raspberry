@@ -21,22 +21,22 @@ class ProjectsSpider(scrapy.Spider):
         # print "3"
         ## Initiate firefox
         self.browser=webdriver.Firefox()
-        ## Open the forums link
-        self.browser.get('https://www.raspberrypi.org/forums/')
-        ## Get the login button path. Find element with title "Login", encode it to utf-8 and then click on the same to go to login page.
-        login_path = self.browser.find_element_by_xpath('//a[@title="Login"]')
-        # login_path.get_attribute('href').encode("utf-8")
-        login_path.click()
+        # ## Open the forums link
+        # self.browser.get('https://www.raspberrypi.org/forums/')
+        # ## Get the login button path. Find element with title "Login", encode it to utf-8 and then click on the same to go to login page.
+        # login_path = self.browser.find_element_by_xpath('//a[@title="Login"]')
+        # # login_path.get_attribute('href').encode("utf-8")
+        # login_path.click()
         
-        ## Get the username input field and populate it with the username.
-        username_id = self.browser.find_element_by_xpath('//input[@id="username"]')
-        username_id.send_keys("tortuga90")
+        # ## Get the username input field and populate it with the username.
+        # username_id = self.browser.find_element_by_xpath('//input[@id="username"]')
+        # username_id.send_keys("tortuga90")
 
-        password_id = self.browser.find_element_by_xpath('//input[@id="password"]')
-        password_id.send_keys("Admin098")
+        # password_id = self.browser.find_element_by_xpath('//input[@id="password"]')
+        # password_id.send_keys("Admin098")
 
-        login_button = self.browser.find_element_by_xpath('//input[@name="login"]')
-        login_button.click()
+        # login_button = self.browser.find_element_by_xpath('//input[@name="login"]')
+        # login_button.click()
         time.sleep(5)
         self.db = MySQLdb.connect("localhost","root","1590","raspberry")
         self.cursor = self.db.cursor()
@@ -76,16 +76,19 @@ class ProjectsSpider(scrapy.Spider):
                 self.browser.get(link)
                 try:
                     item = ProjectsItem()
-                    topic_list = self.browser.find_elements_by_xpath('//ul[@class="topiclist topics"]') 
-                    for i in range(0,len(topic_list)):
-                        topic_name = topic_list[i].find_element_by_xpath('.//a[@class="topictitle"]').text.encode("utf-8")
-                        topic_link = topic_list[i].find_element_by_xpath('.//a[@class="topictitle"]').get_attribute('href')
-                        topic_replies = topic_list[i].find_elements_by_xpath('.//dd')[0].text.encode("utf-8")
-                        topic_views = topic_list[i].find_elements_by_xpath('.//dd')[1].text.encode("utf-8")
-                        topic_author = topic_list[i].find_elements_by_xpath('.//dd')[2].find_element_by_xpath('.//a').text
-                        topic_author_link  = topic_list[i].find_elements_by_xpath('.//dd')[2].find_element_by_xpath('.//a').get_attribute('href')
+                    topic_list = self.browser.find_elements_by_xpath('//ul[@class="topiclist topics"]')
+                    sub_topic_list = topic_list[1].find_elements_by_xpath('.//li') 
+                    # print len(sub_topic_list)
+                    # # print topic_list[0].text, topic_list[1].text
+                    for i in range(0,len(sub_topic_list)):
+                        topic_name = sub_topic_list[i].find_element_by_xpath('.//a[@class="topictitle"]').text.encode("utf-8")
+                        topic_link = sub_topic_list[i].find_element_by_xpath('.//a[@class="topictitle"]').get_attribute('href')
+                        topic_replies = sub_topic_list[i].find_elements_by_xpath('.//dd')[0].text.encode("utf-8")
+                        topic_views = sub_topic_list[i].find_elements_by_xpath('.//dd')[1].text.encode("utf-8")
+                        topic_author = sub_topic_list[i].find_elements_by_xpath('.//dd')[2].find_element_by_xpath('.//a').text
+                        topic_author_link  = sub_topic_list[i].find_elements_by_xpath('.//dd')[2].find_element_by_xpath('.//a').get_attribute('href')
                         print "*****************************************************"
-                        print topic_name, topic_author
+                        print topic_name
                         print "*****************************************************"
                         item['topic_name'] = topic_name
                         item['topic_link'] = topic_link
@@ -94,6 +97,7 @@ class ProjectsSpider(scrapy.Spider):
                         item['topic_author'] = topic_author
                         item['topic_author_link'] = topic_author_link
                         yield item
+                        
                 
                 except NoSuchElementException:
                     print "---------Element not found-----------"
