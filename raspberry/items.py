@@ -23,10 +23,21 @@ class RaspberryItem(scrapy.Item):
     pass
 
 class ProjectsItem(scrapy.Item):
+    head_forum = scrapy.Field()
     topic_name = scrapy.Field()
     topic_link = scrapy.Field()
     topic_replies = scrapy.Field()
     topic_views = scrapy.Field()
     topic_author = scrapy.Field()
     topic_author_link = scrapy.Field()
+    topic_lp_time = scrapy.Field()
+    pass
+
+class PostItem(scrapy.Item):
+    post_author = scrapy.Field()
+    post_author_link = scrapy.Field()
+    post_time = scrapy.Field()
+    post_content = scrapy.Field()
+    author_postCount = scrapy.Field()
+    author_joinDate = scrapy.Field()
     pass

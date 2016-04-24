@@ -13,6 +13,7 @@ from scrapy.http import Request
 
 from raspberry.items import RaspberryItem
 from raspberry.items import ProjectsItem
+from raspberry.items import PostItem
 
 class RaspberryPipeline(object):
 	def __init__(self):
@@ -37,9 +38,20 @@ class RaspberryPipeline(object):
 					pass
 		elif (spider.name == "projects"):
 			try:
-				self.cursor.execute("REPLACE INTO `projects` (`topic_name`, `topic_link`, `topic_replies`, `topic_views`, `topic_author`,"
-					" `topic_author_link`) VALUES (%s, %s, %s, %s, %s, %s)", (item['topic_name'], item['topic_link'], item['topic_replies'],
-					item['topic_views'], item['topic_author'], item['topic_author_link']))
+				self.cursor.execute("REPLACE INTO `projects` (`head_forum`,`topic_name`, `topic_link`, `topic_replies`, `topic_views`, `topic_author`,"
+					" `topic_author_link`, `topic_lp_time`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)", (item['topic_name'], item['head_forum'],
+					item['topic_link'], item['topic_replies'], item['topic_views'], item['topic_author'], item['topic_author_link'], 
+					item['topic_lp_time']))
+				self.conn.commit()
+				
+			except MySQLdb.Error, e:
+				print "Error %d: %s" % (e.args[0], e.args[1])
+				pass
+		elif (spider.name == "post"):
+			try:
+				self.cursor.execute("REPLACE INTO `posts` (`post_author`, `post_author_link`, `post_time`, `post_content`, `author_postCount`,"
+					" `author_joinDate`) VALUES (%s, %s, %s, %s, %s, %s)", (item['post_author'], item['post_author_link'], 
+					item['post_time'], item['post_content'], item['author_postCount'], item['author_joinDate']))
 				self.conn.commit()
 				
 			except MySQLdb.Error, e:

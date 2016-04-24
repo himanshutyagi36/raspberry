@@ -30,15 +30,15 @@ class RaspberryForumsSpider(scrapy.Spider):
         
         ## Get the username input field and populate it with the username.
         username_id = self.browser.find_element_by_xpath('//input[@id="username"]')
-        username_id.send_keys("tortuga90")
+        username_id.send_keys("####")
 
         password_id = self.browser.find_element_by_xpath('//input[@id="password"]')
-        password_id.send_keys("Admin098")
+        password_id.send_keys("####")
 
         login_button = self.browser.find_element_by_xpath('//input[@name="login"]')
         login_button.click()
         time.sleep(5)
-        # self.db = MySQLdb.connect("localhost","root","1590","raspberry")
+        # self.db = MySQLdb.connect("localhost","root","####","raspberry")
         # self.cursor = self.db.cursor()
         # self.cursor.execute("SELECT project_data.project_id,project_link FROM project_data,project_old_links WHERE project_status LIKE '%COMPLETED%' AND project_data.project_id = project_old_links.project_id")
         # self.cursor.execute("SELECT project_data.project_id,project_link FROM project_data,project_link WHERE project_data.project_id = project_link.project_id AND project_status IN ('COMPLETED,','AWARDED,','IN PROGRESS,')")
