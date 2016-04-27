@@ -23,7 +23,7 @@ class ProjectsSpider(scrapy.Spider):
         self.browser=webdriver.Firefox()
         
         time.sleep(5)
-        self.db = MySQLdb.connect("localhost","root","####","raspberry")
+        self.db = MySQLdb.connect("localhost","root","1590","raspberry")
         self.cursor = self.db.cursor()
         self.cursor.execute("SELECT frontPage.forum_link FROM frontPage WHERE head_forum='Projects'")
         

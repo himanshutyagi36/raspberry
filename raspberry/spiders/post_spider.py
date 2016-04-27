@@ -30,15 +30,15 @@ class PostSpider(scrapy.Spider):
         
         ## Get the username input field and populate it with the username.
         username_id = self.browser.find_element_by_xpath('//input[@id="username"]')
-        username_id.send_keys("####")
+        username_id.send_keys("tortuga90")
 
         password_id = self.browser.find_element_by_xpath('//input[@id="password"]')
-        password_id.send_keys("####")
+        password_id.send_keys("Admin098")
 
         login_button = self.browser.find_element_by_xpath('//input[@name="login"]')
         login_button.click()
         time.sleep(5)
-        self.db = MySQLdb.connect("localhost","root","####","raspberry")
+        self.db = MySQLdb.connect("localhost","root","1590","raspberry")
         self.cursor = self.db.cursor()
         self.cursor.execute("SELECT projects.topic_link FROM projects")
         
