@@ -34,6 +34,7 @@ class ProjectsItem(scrapy.Item):
     pass
 
 class PostItem(scrapy.Item):
+    post_head = scrapy.Field()
     post_author = scrapy.Field()
     post_author_link = scrapy.Field()
     post_time = scrapy.Field()

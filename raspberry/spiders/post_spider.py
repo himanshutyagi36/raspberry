@@ -54,19 +54,42 @@ class PostSpider(scrapy.Spider):
         
         try:
             item = PostItem()
-            for link in self.cursor.fetchall():
-                self.browser.get(link)
-                try:
+            # for link in self.cursor.fetchall():
+            self.browser.get('https://www.raspberrypi.org/forums/viewtopic.php?f=37&t=145727')
+            counter = 5
+            try:
+                ## following if checks if requested topic exists
+                if self.browser.find_elements_by_xpath('//h2'):
+                    post_head = self.browser.find_elements_by_xpath('//h2')[0].text.encode('utf-8')
+                    print post_head
                     
+                
                     postbody = self.browser.find_elements_by_xpath('//div[@class="postbody span9"]')
+                    # print len(postbody)
                     for i in range(0,len(postbody)):
-                        post_author = postbody[i].find_element_by_xpath('.//a').text.encode('utf-8')
-                        post_author_link = postbody[i].find_element_by_xpath('.//a').get_attribute('href').encode('utf-8')
+                        post_author = postbody[i].find_element_by_xpath('.//div[@class="author"]').find_element_by_xpath('.//a').text.encode('utf-8')
+                        post_author_link = postbody[i].find_element_by_xpath('.//div[@class="author"]').find_element_by_xpath('.//a').get_attribute('href')
                         post_time = postbody[i].find_element_by_xpath('.//div[@class="author"]').text.encode('utf-8').split('\xbb')[1]
                         post_content = postbody[i].find_element_by_xpath('.//div[@class="content"]').text.encode('utf-8')
-                        author_postCount = self.browser.find_elements_by_xpath('.//dl[@class="postprofile span3"]')[i].find_elements_by_xpath('.//dd')[0].text.encode('utf-8')
-                        author_joinDate = self.browser.find_elements_by_xpath('.//dl[@class="postprofile span3"]')[i].find_elements_by_xpath('.//dd')[1].text.encode('utf-8')
+                        test_str = self.browser.find_elements_by_xpath('.//dl[@class="postprofile span3"]')[i].find_elements_by_xpath('.//dd')[0].text.encode('utf-8')
+                        test_str2 = self.browser.find_elements_by_xpath('.//dl[@class="postprofile span3"]')[i].find_elements_by_xpath('.//dd')[1].text.encode('utf-8')
                         
+                        ## If the post is by the forum moderator
+                        if 'Forum Moderator' in test_str or 'Raspberry Pi Certified Educator' in test_str:
+                            temp_str = self.browser.find_elements_by_xpath('.//dl[@class="postprofile span3"]')[i].find_elements_by_xpath('.//dd')[1].text.encode('utf-8')
+                            temp_str2 = self.browser.find_elements_by_xpath('.//dl[@class="postprofile span3"]')[i].find_elements_by_xpath('.//dd')[2].text.encode('utf-8')
+                        else:
+                            temp_str = test_str
+                            temp_str2 = test_str2
+                        # print temp_str+','+temp_str2
+                        l = temp_str.split(': ')
+                        author_postCount = l[1]
+                        l2 = temp_str2.split(': ')
+                        author_joinDate = l2[1]
+                        
+                        print post_head+','+post_author
+
+                        item['post_head'] = post_head
                         item['post_author'] = post_author
                         item['post_author_link'] = post_author_link
                         item['post_time'] = post_time
@@ -74,9 +97,13 @@ class PostSpider(scrapy.Spider):
                         item['author_postCount'] = author_postCount
                         item['author_joinDate'] = author_joinDate
                         yield item
+                        # counter-=1
+                else:
+                    print "This topic doesn't exist."
+                    # continue
 
-                except NoSuchElementException:
-                    print "---------Element not found-----------"
+            except NoSuchElementException:
+                print "---------Element not found-----------"
 
 
         except NoSuchElementException:

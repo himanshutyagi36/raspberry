@@ -86,7 +86,7 @@ class ProjectsSpider(scrapy.Spider):
                             topic_author_link  = sub_topic_list[i].find_elements_by_xpath('.//dd')[2].find_element_by_xpath('.//a').get_attribute('href')
                             topic_lp_time = sub_topic_list[i].find_elements_by_xpath('.//dd')[3].find_element_by_xpath('.//time').text.encode("utf-8")
                             print "*****************************************************"
-                            print head_forum,topic_name
+                            print head_forum+','+topic_name
                             
                             item['head_forum'] = head_forum
                             item['topic_name'] = topic_name

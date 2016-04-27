@@ -49,8 +49,8 @@ class RaspberryPipeline(object):
 				pass
 		elif (spider.name == "post"):
 			try:
-				self.cursor.execute("REPLACE INTO `posts` (`post_author`, `post_author_link`, `post_time`, `post_content`, `author_postCount`,"
-					" `author_joinDate`) VALUES (%s, %s, %s, %s, %s, %s)", (item['post_author'], item['post_author_link'], 
+				self.cursor.execute("REPLACE INTO `posts` (`post_head`, `post_author`, `post_author_link`, `post_time`, `post_content`, `author_postCount`,"
+					" `author_joinDate`) VALUES (%s, %s, %s, %s, %s, %s, %s)", (item['post_head'], item['post_author'], item['post_author_link'], 
 					item['post_time'], item['post_content'], item['author_postCount'], item['author_joinDate']))
 				self.conn.commit()
 				
